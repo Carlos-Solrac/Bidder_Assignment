@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+</head>
+<body data-gr-c-s-loaded="true" style="margin: 0px;">
+    {% with messages = get_flashed_messages() %}
+         {% if messages %}
+            <ul>
+               {% for message in messages %}
+               <li>{{ message }}</li>
+               {% endfor %}
+            </ul>
+         {% endif %}
+    {% endwith %}
+
+{% if session['logged_in'] %}
+
+        <table border ="1">
+            <thead>
+            <tr><td> Item ID</td>
+            <td> Item Name</td>
+            <td> Item Description</td>
+            <td> Lowest Bid Limit</td>
+            <td>Highest Bidder Id</td>
+            <td> Highest Bid Amount</td>
+            </tr></thead>
+            <tbody>
+            {% for row in rows.itertuples() %}
+            <tr>
+                <td> {{row["Item_ID"]}} </td>
+                <td> {{row["Item_Name"]}} </td>
+                <td> {{row["Item_Description"]}} </td>
+                <td> {{row["Lowest_Bid_Limit"]}} </td>
+                <td> {{row["Highest_Bidder_Id"]}} </td>
+                <td> {{row["Highest_Bidder_Amount"]}} </td>
+            </tr>
+
+        {% endfor %}
+            </tbody>
+        </table>
+
+    <a href="/">Go back to home page</a>
+{% endif %}
+
+</body></html>

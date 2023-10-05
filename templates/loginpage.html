@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <title> Login Screen</title>
+</head>
+
+<body >
+<form action="/loginpage"  method="POST">
+    {% with messages = get_flashed_messages() %}
+         {% if messages %}
+            <ul>
+               {% for message in messages %}
+               <li>{{ message }}</li>
+               {% endfor %}
+            </ul>
+         {% endif %}
+    {% endwith %}
+
+<h1>Log in </h1>
+<input type="text"  placeholder="Bidder name" name="Bidder_Name"  ><br>
+<label for="login-name"> </label>
+<input type="text" placeholder="Password" name="Login_Password" > <br>
+<input type="submit" value="Log in"><br>
+
+</form>
+</body></html>

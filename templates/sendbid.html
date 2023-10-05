@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+</head>
+<body data-gr-c-s-loaded="true" style="margin: 0px;">
+    {% with messages = get_flashed_messages() %}
+         {% if messages %}
+            <ul>
+               {% for message in messages %}
+               <li>{{ message }}</li>
+               {% endfor %}
+            </ul>
+         {% endif %}
+    {% endwith %}
+
+{% if session['logged_in']  %}
+<h1>Welcome {{name}}</h1>
+    <form action="{{url_for('sendbid') }}" method="POST" enctype="multipart/form-data">
+        <h3>Send a bid</h3>
+             Item ID<br>
+             <input type="text" name="Item_Id"  ><br>
+              Bid<br>
+             <input type="text" name="Bid_Amount"  ><br>
+            <input type ="submit" value ="Send bid" > <br>
+    </form>
+    <a href="/">Go back to home page</a>
+{% endif %}
+
+</body>
+</html>
