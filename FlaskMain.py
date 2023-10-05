@@ -11,7 +11,7 @@ All work below was performed by Carlos Cuellar
 """
 
 from flask import Flask, render_template, request, session, flash, jsonify
-import Encryption, socket , os , string, base64 , hmac, hashlib
+import Encryption, socket, os, string, base64, hmac, hashlib
 import sqlite3 as sql
 import pandas as pd
 
@@ -43,12 +43,14 @@ def sendbid():
     else:
         return render_template('sendbid.html', name=session['Bidder_Name'])
 
+
 @app.route('/sendHMACbid')
 def send_HMAC_bid():
     if not session.get('logged_in'):
         return render_template('loginpage.html')
     else:
         return render_template('sendHMACbid.html', name=session['Bidder_Name'])
+
 
 @app.route('/addbidder')
 def addbidder():  # Renders new bidder page
@@ -91,9 +93,10 @@ def send_bid_msg():
                     # With item id and bid amount validated we encrypt those values along with the bidders ID and
                     # send it to the message server.
                     itemid = str(Encryption.cipher.encrypt(bytes(itemid, 'utf-8')).decode("utf-8"))
-                    itembidamount = str(Encryption.cipher.encrypt(bytes(itembidamount,'utf-8')).decode("utf-8"))
+                    itembidamount = str(Encryption.cipher.encrypt(bytes(itembidamount, 'utf-8')).decode("utf-8"))
                     bidderid = str(Encryption.cipher.encrypt(bytes(bidderid, 'utf-8')).decode("utf-8"))
-                    # The three parameters are added to one string with a comma delimiter to be split by the message server.
+                    # The three parameters are added to one string with a comma delimiter to be split by the message
+                    # server.
                     msg = bidderid + "," + itemid + "," + itembidamount
                     sock.sendall(bytes(msg, "utf-8"))
                     sock.close()
@@ -103,6 +106,7 @@ def send_bid_msg():
                 msg = "Error processing bid. Bid not sent.", e
             finally:
                 return render_template('result.html', msg=msg)
+
 
 @app.route('/sendHMACbid', methods=['POST'])
 def send_HMAC_bid_msg():
@@ -133,17 +137,19 @@ def send_HMAC_bid_msg():
                 else:
                     # With item id and bid amount validated we encrypt those values along with the bidders ID and
                     # send it to the message server.
-                    encrypted_msg =""
+                    encrypted_msg = ""
                     msg_values = [itemid, itembidamount, bidderid]
                     values_string = ','.join(msg_values)
                     for val in msg_values:
-                        encrypted_msg = encrypted_msg + str(Encryption.cipher.encrypt(bytes(val, 'utf-8')).decode("utf-8")) + ','
+                        encrypted_msg = encrypted_msg + str(
+                            Encryption.cipher.encrypt(bytes(val, 'utf-8')).decode("utf-8")) + ','
                     # The three parameters are added to one string with a comma delimiter to be split by the message
                     # server.
 
                     # Use HMAC to create a signature to append to our message.
                     secret_key = b'asd13a2f4dsf56'
-                    computed_sig = hmac.new(secret_key, encrypted_msg.encode('utf-8'),digestmod=hashlib.sha3_512).digest()
+                    computed_sig = hmac.new(secret_key, encrypted_msg.encode('utf-8'),
+                                            digestmod=hashlib.sha3_512).digest()
                     # Encrypt the given message and append the HMAC tag to it.
                     sent_msg = encrypted_msg.encode('utf-8') + computed_sig
                     sock.sendall(bytes(sent_msg))
@@ -222,7 +228,6 @@ def addrec():  # Renders page to add bidder information
 
                 # Required to encrypt Name, Phone Number, and Password. Encrypted right after validating input.
 
-
                 nm = request.form['Bidder_Name']
                 phonenum = request.form['Phone_Number']
                 prequalified = request.form['Pre_Qualified_Upper_Limit']
@@ -264,7 +269,7 @@ def addrec():  # Renders page to add bidder information
                             "INSERT INTO Bidder (Bidder_Name,Phone_Number,Pre_Qualified_Upper_Limit,"
                             "App_Role_Level, "
                             "Login_Password  ) VALUES(?,?,?,?,?)",
-                            ( nm, phonenum, prequalified, rolelevel, pwd)
+                            (nm, phonenum, prequalified, rolelevel, pwd)
                         )
 
                         con.commit()  # Save changes
@@ -273,7 +278,6 @@ def addrec():  # Renders page to add bidder information
             except ValueError:
                 msg = msg + "Error in insert operation."
                 con.rollback()  # Roll back changes if there is an error with insertion.
-
 
             finally:
                 con.close()  # Close connection after performing changes
